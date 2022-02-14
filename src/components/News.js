@@ -22,7 +22,8 @@ export default class News extends Component {
 
   }
   handlePrevClick = async ()=>{
-    let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=59bb9c9c383b4849906d96f3ef7d7420&page=${this.state.page - 1}&pageSize=20`;
+    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=59bb9c9c383b4849906d96f3ef7d7420&pagesize=${this.props.pageSize}`;
+    this.setState({loading: true});
     let data = await fetch(url);
     let parsedData = await data.json()
     console.log(parsedData);  
@@ -52,8 +53,9 @@ export default class News extends Component {
         <>
         <div className="container my-3">
              <h1>NewsMonkey - Top Headlines</h1> 
+             {this.state.loading&&<Spinner/>}
             <div className="row">
-           {this.state.articles.map((element)=> {
+           {!this.state.loading &&this.state.articles.map((element)=> {
               return <div className="col-md-4 my-3" key={element.url} >
                 <NewsItem title = {element.title?element.title.slice(0,45):""} description = {element.description?element.description.slice(0,80):""} urlToImage={element.urlToImage} newzUrl={element.url}/>
               </div>

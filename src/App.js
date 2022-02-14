@@ -10,7 +10,6 @@ function App() {
     <>
     
     <Nav/>
-    <Spinner/>
     <News pageSize={5} country="in" category="science"/>
     
     </>
