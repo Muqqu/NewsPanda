@@ -1,10 +1,4 @@
-business
-entertainment
-general
-health
-science
-sports
-technology
+
 {
     "status": "ok",
     "totalResults": 36,

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import NewsItem from './NewsItem'
 
 import Spinner from './Spinner';
+import PropTypes from 'prop-types'
 
 export default class News extends Component {
    constructor(){
@@ -11,6 +12,17 @@ export default class News extends Component {
       loading: false,
       page:1,
     }
+  }
+  static defaultProps = {
+    country: 'in',
+    pageSize: 8, 
+    category: 'general',
+  }
+
+  static propTypes = {
+    country: PropTypes.string,
+    pageSize: PropTypes.number, 
+    category: PropTypes.string,
   }
   async componentDidMount(){
     console.log();
