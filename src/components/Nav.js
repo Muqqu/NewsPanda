@@ -32,7 +32,7 @@ export default class Nav extends Component {
                 <Link className="nav-link" to="/sports">sports</Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/technolog">technolog</Link>
+                <Link className="nav-link" to="/technology">technology</Link>
               </li>
             </ul>
           </div>

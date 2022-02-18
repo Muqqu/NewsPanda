@@ -5,8 +5,8 @@ import Spinner from './Spinner';
 import PropTypes from 'prop-types'
 
 export default class News extends Component {
-   constructor(){
-    super();
+   constructor(props){
+    super(props);
     this.state = {
       articles: [],
       loading: false,
@@ -24,55 +24,51 @@ export default class News extends Component {
     pageSize: PropTypes.number, 
     category: PropTypes.string,
   }
-  async componentDidMount(){
-    console.log();
-    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=59bb9c9c383b4849906d96f3ef7d7420&pagesize=${this.props.pageSize}`;
-    let data = await fetch(url);
-    let parsedata = await data.json(data);
-    console.log(parsedata);
-    this.setState({articles: parsedata.articles,
-      totalResults: parsedata.totalResults,
-      loading: false})
-
+  capitalizeFirstLetter = (string)=> {
+    return string.charAt(0).toUpperCase() + string.slice(1);
   }
-  handlePrevClick = async ()=>{
-    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=dbe57b028aeb41e285a226a94865f7a7&page=${this.state.page - 1}&pageSize=${this.props.pageSize}`;
-    this.setState({loading: true});
-    let data = await fetch(url);
-    let parsedData = await data.json() 
-    this.setState({page: this.state.page - 1,articles: parsedData.articles,
-      totalResults: parsedData.totalResults,
-      loading: false})
+  async componentDidMount() {
+    this.updateNews();
+}
+
+handlePrevClick = async () => {
+    this.setState({ page: this.state.page - 1 });
+    this.updateNews();
 
 }
 
- handleNextClick = async ()=>{
-      if (!(this.state.page + 1 > Math.ceil(this.state.totalResults/this.props.pageSize))){
-        let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=dbe57b028aeb41e285a226a94865f7a7&page=${this.state.page + 1}&pageSize=${this.props.pageSize}`;
-        this.setState({loading: true});
-        let data = await fetch(url);
-        let parsedData = await data.json()  
-        this.setState({page: this.state.page + 1,articles: parsedData.articles,
-          totalResults: parsedData.totalResults,
-          loading: false})
+handleNextClick = async () => {
+  this.setState({ page: this.state.page + 1 });
+  this.updateNews()
 }
-}
+
+async updateNews() {
+  const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=dbe57b028aeb41e285a226a94865f7a7&page=${this.state.page}&pageSize=${this.props.pageSize}`;
+  this.setState({ loading: true });
+  let data = await fetch(url);
+  let parsedData = await data.json() 
+        this.setState({
+            articles: parsedData.articles,
+            totalResults: parsedData.totalResults,
+            loading: false
+        })
+
+    }
+  
 
   render() {
     return (
         <>
         <div className="container my-3">
-             <h1>NewsMonkey - Top Headlines</h1> 
+             <h1>NewsMonkey - Top {this.capitalizeFirstLetter(this.props.category)} Headlines</h1> 
              {this.state.loading&&<Spinner/>}
-            <div className="row">
-           {!this.state.loading &&this.state.articles.map((element)=> {
-              return <div className="col-md-4 my-3" key={element.url} >
-                <NewsItem title = {element.title?element.title.slice(0,45):""} description = {element.description?element.description.slice(0,80):""} urlToImage={element.urlToImage} newzUrl={element.url}/>
-              </div>
-            })}
-                
-                    
-                </div>
+             <div className="row">
+                    {!this.state.loading && this.state.articles.map((element) => {
+                        return <div className="col-md-4" key={element.url}>
+                            <NewsItem title={element.title ? element.title : ""} description={element.description ? element.description : ""} imageUrl={element.urlToImage} newsUrl={element.url} author={element.author} date={element.publishedAt} source={element.source.name} />
+                        </div>
+                    })}
+            </div>
                
         </div>
         <div className="container d-flex justify-content-between">
